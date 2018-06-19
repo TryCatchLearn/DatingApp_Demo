@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {map} from 'rxjs/operators';
+import {map, catchError} from 'rxjs/operators';
+import { throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,10 @@ login(model: any) {
         if (user) {
           localStorage.setItem('token', user.token);
         }
-      })
+      }),
+      // catchError((error: any) => {
+      //   return throwError(error);
+      // })
     );
 }
 

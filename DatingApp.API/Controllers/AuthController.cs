@@ -69,7 +69,7 @@ namespace DatingApp.API.Controllers
                 signingCredentials: creds
             );
 
-            return Ok(new 
+            return Ok(new
             {
                 token = new JwtSecurityTokenHandler().WriteToken(token)
             });
