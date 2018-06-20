@@ -1,39 +1,49 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {map, catchError} from 'rxjs/operators';
-import { throwError } from 'rxjs';
+import { map } from 'rxjs/operators';
+import {JwtHelperService} from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   baseUrl = 'http://localhost:5000/api/auth/';
+  jwtHelper = new JwtHelperService();
+  decodedToken: any;
 
-constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
-login(model: any) {
-  return this.http.post(this.baseUrl + 'login', model, this.requestOptions())
-    .pipe(
-      map((response: any) => {
-        const user = response;
-        if (user) {
-          localStorage.setItem('token', user.token);
-        }
-      }),
-      // catchError((error: any) => {
-      //   return throwError(error);
-      // })
+  login(model: any) {
+    return this.http
+      .post(this.baseUrl + 'login', model, this.requestOptions())
+      .pipe(
+        map((response: any) => {
+          const user = response;
+          if (user) {
+            localStorage.setItem('token', user.token);
+            this.decodedToken = this.jwtHelper.decodeToken(user.token);
+            console.log(this.decodedToken);
+          }
+        })
+      );
+  }
+
+  register(model: any) {
+    return this.http.post(
+      this.baseUrl + 'register',
+      model,
+      this.requestOptions()
     );
-}
+  }
 
-register(model: any) {
-  return this.http.post(this.baseUrl + 'register', model, this.requestOptions());
-}
+  loggedIn() {
+    const token = localStorage.getItem('token');
+    return !this.jwtHelper.isTokenExpired(token);
+  }
 
-private requestOptions() {
-  const headers = new HttpHeaders();
-  headers.set('Content-type', 'application/json');
-  return {headers};
-}
-
+  private requestOptions() {
+    const headers = new HttpHeaders();
+    headers.set('Content-type', 'application/json');
+    return { headers };
+  }
 }
