@@ -68,14 +68,6 @@ namespace DatingApp.API.Controllers
                 SigningCredentials = creds
             };
 
-            // var token = new JwtSecurityToken(
-            //     issuer: "localhost",
-            //     audience: "localhost",
-            //     claims: claims,
-            //     expires: DateTime.Now.AddDays(1),
-            //     signingCredentials: creds
-            // );
-
             var tokenHandler = new JwtSecurityTokenHandler();
 
             var token = tokenHandler.CreateToken(tokenDescriptor);
