@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import {BehaviorSubject} from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { map } from 'rxjs/operators';
-import {JwtHelperService} from '@auth0/angular-jwt';
+import { JwtHelperService } from '@auth0/angular-jwt';
 import { environment } from '../../environments/environment';
 import { User } from '../_models/user';
 
@@ -25,7 +25,7 @@ export class AuthService {
 
   login(model: any) {
     return this.http
-      .post(this.baseUrl + 'login', model, this.requestOptions())
+      .post(this.baseUrl + 'login', model)
       .pipe(
         map((response: any) => {
           const user = response;
@@ -40,22 +40,12 @@ export class AuthService {
       );
   }
 
-  register(model: any) {
-    return this.http.post(
-      this.baseUrl + 'register',
-      model,
-      this.requestOptions()
-    );
+  register(user: User) {
+    return this.http.post(this.baseUrl + 'register', user);
   }
 
   loggedIn() {
     const token = localStorage.getItem('token');
     return !this.jwtHelper.isTokenExpired(token);
-  }
-
-  private requestOptions() {
-    const headers = new HttpHeaders();
-    headers.set('Content-type', 'application/json');
-    return { headers };
   }
 }
